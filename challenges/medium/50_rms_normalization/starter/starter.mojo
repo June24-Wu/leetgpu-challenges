@@ -3,7 +3,7 @@ from gpu.id import block_dim, block_idx, thread_idx
 from memory import UnsafePointer
 from math import ceildiv
 
-# input, gamma, beta, output are device pointers
+# input, output are device pointers
 @export
 def solve(input: UnsafePointer[Float32], gamma: Float32, 
           beta: Float32, output: UnsafePointer[Float32], 
