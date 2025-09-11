@@ -26,30 +26,25 @@ jobs:
         python - << 'EOF'
         import os
         import json
+        import collections
 
         challenges_dir = "challenges"
         seen_indexes = set()
-        duplicates = []
-
+        questions = collections.defaultdict(list)
         for folder in os.listdir(challenges_dir):
             folder_path = os.path.join(challenges_dir, folder)
-            if os.path.isdir(folder_path):
-                # 假设每个文件夹里有 challenge.json 或 index.json
-                index_file = os.path.join(folder_path, "index.json")
-                if not os.path.exists(index_file):
-                    continue
-                with open(index_file) as f:
-                    data = json.load(f)
-                    idx = data.get("index")
-                    if idx in seen_indexes:
-                        duplicates.append((folder, idx))
-                    else:
-                        seen_indexes.add(idx)
+            for question in os.listdir(folder_path):
+                idx = question.split("_")[0]
+                questions[idx].append(question)
 
-        if duplicates:
-            print("❌ Duplicate indexes found:")
-            for folder, idx in duplicates:
-                print(f"Folder: {folder}, Index: {idx}")
+        is_duplicate = False
+        for k, v in questions.items():
+            if len(v) > 1:
+                print("Duplicate Questions: ")
+                [print(i) for i in v]
+                is_duplicate = True
+
+        if is_duplicate:
             exit(1)
         else:
             print("✅ All indexes are unique.")
