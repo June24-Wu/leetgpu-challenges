@@ -1,0 +1,56 @@
+name: Check Challenge Indexes
+
+on:
+  pull_request:
+    paths:
+      - 'challenges/**'
+
+jobs:
+  check-index:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: pip install pyyaml
+
+    - name: Check for duplicate indexes
+      run: |
+        python - << 'EOF'
+        import os
+        import json
+
+        challenges_dir = "challenges"
+        seen_indexes = set()
+        duplicates = []
+
+        for folder in os.listdir(challenges_dir):
+            folder_path = os.path.join(challenges_dir, folder)
+            if os.path.isdir(folder_path):
+                # 假设每个文件夹里有 challenge.json 或 index.json
+                index_file = os.path.join(folder_path, "index.json")
+                if not os.path.exists(index_file):
+                    continue
+                with open(index_file) as f:
+                    data = json.load(f)
+                    idx = data.get("index")
+                    if idx in seen_indexes:
+                        duplicates.append((folder, idx))
+                    else:
+                        seen_indexes.add(idx)
+
+        if duplicates:
+            print("❌ Duplicate indexes found:")
+            for folder, idx in duplicates:
+                print(f"Folder: {folder}, Index: {idx}")
+            exit(1)
+        else:
+            print("✅ All indexes are unique.")
+        EOF
