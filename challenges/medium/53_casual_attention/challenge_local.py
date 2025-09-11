@@ -1,18 +1,22 @@
 import ctypes
 from typing import Any, List, Dict
 import torch
-from core.challenge_base import ChallengeBase
+# from core.challenge_base import ChallengeBase
 
-class Challenge(ChallengeBase):
+class Challenge:
+# class Challenge(ChallengeBase):
     def __init__(self):
-        super().__init__(
-            name="Causal Self-Attention",
-            atol=1e-05,
-            rtol=1e-05,
-            num_gpus=1,
-            access_tier="free"
-        )
-
+        self.name="Rotary Position Embedding"
+        self.atol=1e-05
+        self.rtol=1e-05
+        # super().__init__(
+        #     name="RMS Normalization",
+        #     atol=1e-05,
+        #     rtol=1e-05,
+        #     num_gpus=1,
+        #     access_tier="free"
+        # )
+    
     def reference_impl(self, Q: torch.Tensor, K: torch.Tensor, V: torch.Tensor, output: torch.Tensor, M: int, d: int):
         scale = d ** 0.5
         attn = torch.matmul(Q, K.t()) / scale
@@ -85,10 +89,9 @@ class Challenge(ChallengeBase):
 
     def generate_performance_test(self) -> Dict[str, Any]:
         dtype = torch.float32
-        M, d = 5000, 128
+        M, d = 10000, 128
         Q = torch.empty((M, d), device="cuda", dtype=dtype).uniform_(-100, 100)
         K = torch.empty((M, d), device="cuda", dtype=dtype).uniform_(-100, 100)
         V = torch.empty((M, d), device="cuda", dtype=dtype).uniform_(-100, 100)
         output = torch.empty(M, d, device="cuda", dtype=dtype)
         return {"Q": Q, "K": K, "V": V, "output": output, "M": M, "d": d}
-
