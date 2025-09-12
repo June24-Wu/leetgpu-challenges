@@ -25,27 +25,18 @@ jobs:
       run: |
         python - << 'EOF'
         import os
-        import json
         import collections
 
         challenges_dir = "challenges"
-        seen_indexes = set()
+
         questions = collections.defaultdict(list)
         for folder in os.listdir(challenges_dir):
             folder_path = os.path.join(challenges_dir, folder)
             for question in os.listdir(folder_path):
                 idx = question.split("_")[0]
                 questions[idx].append(question)
-
-        is_duplicate = False
-        for k, v in questions.items():
-            if len(v) > 1:
-                print("Duplicate Questions: ")
-                [print(i) for i in v]
-                is_duplicate = True
-
-        if is_duplicate:
-            exit(1)
-        else:
-            print("✅ All indexes are unique.")
+                if len(questions[idx]):
+                    print(f"PR duplicated found: \n {questions[idx]}.")
+                    exit(1)
+        print("✅ All indexes are unique.")
         EOF
