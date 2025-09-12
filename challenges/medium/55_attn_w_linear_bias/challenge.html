@@ -1,7 +1,16 @@
-<p> Implement Attention with Linear Biases (ALiBi) for a given set of matrices. 
+<p>
+  Implement Attention with Linear Biases (ALiBi), following the method described in
+  <a href="https://arxiv.org/pdf/2108.12409" target="_blank">
+  "Train Short, Test Long: Attention with Linear Biases Enables Input Length Extrapolation"
+  </a>, for a given set of matrices.  
   Given the query matrix <code>Q</code> of size <code>M×d</code>, key matrix <code>K</code> of size <code>N×d</code>, and value matrix
   <code>V</code> of size <code>N×d</code>, your program should compute the output matrix using the formula:
-  $$\text{Attention}_{ALiBi}(Q, K, V) = \text{softmax}\Bigl( \frac{QK^T}{\sqrt{d}} + \alpha \cdot \Delta \Bigr)V$$  
+  </p>
+  
+  <p>
+  $$
+  \text{Attention}_{ALiBi}(Q, K, V) = \text{softmax}\Bigl( \frac{QK^T}{\sqrt{d}} + \alpha \cdot \Delta \Bigr)V
+  $$
 </p>
 
 <p>
