@@ -1,0 +1,66 @@
+<p>
+  Implement a single head Rotary Position Embedding (RoPE) forward pass under single batch.
+  Given an input tensor of shape <code>[S, H]</code> where:
+</p>
+<ul>
+  <li><code>S</code> = sequence length</li>
+  <li><code>H</code> = hidden dimension (must be even)</li>
+</ul>
+
+<p>
+  Given an <code>base</code> for geometric progression used to compute the rotation angles.
+  RoPE applies a position-dependent rotation to pairs of features:
+</p>
+
+<p>
+  \[
+  \begin{align}
+  \text{pos} &= [0, 1, \dots, S-1]^\top \\ 
+  \text{freq}_i &= \text{base}^{-\frac{2i}{H}}, \quad i = 0, 1, \dots, \tfrac{H}{2}-1 \\
+  \theta_{s,i} &= \text{pos}_s \cdot \text{freq}_i \\
+  \cos\theta_{s,i}, \; \sin\theta_{s,i} & \quad \text{are applied to each pair of features} \\
+  x_{s,2i}, x_{s,2i+1} &= \text{even and odd indices of input vector at position } s \\
+  y_{s,2i} &= x_{s,2i}\cos\theta_{s,i} - x_{s,2i+1}\sin\theta_{s,i} \\
+  y_{s,2i+1} &= x_{s,2i}\sin\theta_{s,i} + x_{s,2i+1}\cos\theta_{s,i}
+  \end{align}
+  \]
+</p>
+
+<h2>Implementation Requirements</h2>
+<ul>
+  <li>Use only native features (external libraries are not permitted)</li>
+  <li>The <code>solve</code> function signature must remain unchanged</li>
+  <li>The final result must be stored in the <code>output</code> tensor</li>
+</ul>
+
+<h2>Example 1:</h2>
+<pre>
+Input:  
+  input = [[1.0, 0.0],
+           [0.0, 1.0],
+           [1.0, 1.0]]   (S=3, H=2)
+  base = 10000.0
+
+Output: 
+  [[ 1.0000000, 0.0000000],
+   [-0.8414710, 0.5403023],
+   [-1.3254442, 0.49315065]]
+</pre>
+
+<h2>Example 2:</h2>
+<pre>
+Input:  
+  input = [[5.0, 3.0]]   (S=1, H=2)
+  base = 10000.0
+
+Output: 
+  [[5.0000000, 3.0000000]]
+</pre>
+
+<h2>Constraints</h2>
+<ul>
+  <li>1 ≤ <code>S</code> ≤ 10,000</li>
+  <li><code>H</code> is even</li>
+  <li>-100.0 ≤ input values ≤ 100.0</li>
+  <li>1.0 ≤ base ≤ 10,000.0</li>
+</ul>
